@@ -275,11 +275,30 @@ export function hexToRgb(hex: string) {
     : null;
 }
 
-export function genRandomNumbers(min: number, max: number, count: number) {
-  const arr = [];
-  while (arr.length < count) {
-    const r = Math.floor(Math.random() * (max - min)) + min;
-    if (!arr.includes(r)) arr.push(r);
+export function genRandomNumbers(
+  min: number,
+  max: number,
+  count: number
+): number[] {
+  const range = max - min;
+
+  // Guard against invalid inputs
+  if (count > range) {
+    throw new Error(
+      "Count cannot be greater than the range of unique numbers."
+    );
   }
-  return arr;
+
+  // Create an array of all possible numbers
+  const numbers = Array.from({ length: range }, (_, i) => i + min);
+
+  // Shuffle the array
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+  }
+
+  // Return the first `count` numbers
+  return numbers.slice(0, count);
 }
+
